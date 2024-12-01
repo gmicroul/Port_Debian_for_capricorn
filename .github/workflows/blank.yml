@@ -41,14 +41,14 @@ jobs:
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
           sudo ./llvm.sh 19
-          git clone --depth 1 https://gitlab.com/kschen202115/msm8996-6.9.git linux
+          git clone --depth 1 https://gitlab.com/kschen202115/msm8953-6.9.git linux
           ls
       - name: Patch kernel
         id: patch
         run: |
           # cp  cjktty-6.9.patch linux/cjktty-6.9.patch
-          cp config linux/arch/arm64/configs/msm8996_defconfig
-          chmod +rw linux/arch/arm64/configs/msm8996_defconfig
+          cp config linux/arch/arm64/configs/msm8953_defconfig
+          chmod +rw linux/arch/arm64/configs/msm8953_defconfig
           cd linux
           wget https://raw.githubusercontent.com/zhmars/cjktty-patches/refs/heads/master/cjktty-add-cjk32x32-font-data.patch
           wget https://raw.githubusercontent.com/kschen202115/Armbian-build/refs/heads/main/cjktty-6.9.patch
@@ -67,7 +67,7 @@ jobs:
           export PATH=/usr/lib/llvm-19/bin:$PATH
           export CROSS_COMPILE=aarch64-linux-gnu-
           export ARCH=arm64
-          make msm8996_defconfig ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CC=clang-19 LD=ld.lld-19 LLVM=1 LTO=1
+          make msm8953_defconfig ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CC=clang-19 LD=ld.lld-19 LLVM=1 LTO=1
           make deb-pkg ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CC=clang-19 LD=ld.lld-19 LLVM=1 LTO=1 -j$(nproc)
           #make deb-pkg -j$(nproc)
           cd ..
@@ -75,8 +75,8 @@ jobs:
           cp *.deb /rootfs
           cp linux/arch/arm64/boot/Image.gz /workdir
           cp linux/arch/arm64/boot/Image.gz /rootfs/tmp_mkboot/
-          cp linux/arch/arm64/boot/dts/qcom/*capricorn*.dtb /rootfs/tmp_mkboot/
-          tar -czf /workdir/msm8996_dtb.tar.gz linux/arch/arm64/boot/dts/qcom/*capricorn*.dtb
+          cp linux/arch/arm64/boot/dts/qcom/*mido*.dtb /rootfs/tmp_mkboot/
+          tar -czf /workdir/msm8953_dtb.tar.gz linux/arch/arm64/boot/dts/qcom/*mido*.dtb
           find ./ -type f \( ! -name "*.ko" -a ! -name "modules.*" \) -exec rm -f {} \;
           cd linux/
           tar -czf /workdir/modules.tar.gz ./*
