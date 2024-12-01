@@ -26,10 +26,10 @@ jobs:
         sudo debootstrap --arch=arm64 --foreign --verbose $CODENAME rootfs http://ftp.us.debian.org/debian/
         sudo cp /usr/bin/qemu-aarch64-static rootfs/usr/bin/
         # 配置 chroot 环境
-        sudo mount -t proc /proc rootfs/proc
-        sudo mount -t sysfs /sys rootfs/sys
+        sudo mount --bind /proc rootfs/proc
         sudo mount --bind /dev rootfs/dev
         sudo mount --bind /dev/pts rootfs/dev/pts
+        sudo mount --bind /sys rootfs/sys
         echo "##############"
         sudo chroot rootfs /debootstrap/debootstrap --second-stage --verbose
 
@@ -42,7 +42,7 @@ jobs:
           apt-get update
 
           # 安装软件包
-          apt-get install -y vim sudo curl openssh-server ssh net-tools ethtool ifupdown iputils htop vim kmod network-manager make nano fdisk git usbutils initramfs-tools
+          apt-get install -y vim sudo curl openssh-server ssh net-tools ethtool ifupdown iputils-ping  htop vim kmod network-manager make nano fdisk git usbutils initramfs-tools
 
           # 添加用户 kschen 并设置密码
           useradd -m -s /bin/bash kschen
