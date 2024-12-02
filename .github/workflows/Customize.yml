@@ -157,7 +157,8 @@ jobs:
           if [ "${{ inputs.add_firmware }}" == "true" ]; then
             #######################################
             #请自己添加firmware到仓库里，并取消注释
-            sudo cp -rf ./firmware/* /mnt/chroot/lib/firmware/
+            sudo cp -rf --no-dereference ./firmware/* /mnt/chroot/lib/firmware/ || true
+            # cp -f --no-dereference source_file destination || true
             #######################################
           fi
       - name: Install Kernel in chroot
@@ -183,7 +184,7 @@ jobs:
           # 解包 boot.img
           abootimg -x boot.img
           # 修改 cmdline 参数
-          sed -i 's|^cmdline=.*|cmdline=console=tty0 root=UUID=$UUID rw loglevel=3 splash|' bootimg.cfg
+          sed -i "s|^cmdline = .*|cmdline = console=tty0 root=UUID=$UUID rw loglevel=3 splash|" bootimg.cfg
           # 显示修改后的 bootimg.cfg
           echo "Updated bootimg.cfg:"
           cat bootimg.cfg
