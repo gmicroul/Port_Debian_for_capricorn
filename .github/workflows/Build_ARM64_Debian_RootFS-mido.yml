@@ -51,9 +51,7 @@ jobs:
         sudo mount --bind /sys /mnt/rootfs/sys
 
         # 自定义配置（通过 chroot 进入 rootfs）
-        sudo cp usr/bin/* /mnt/rootfs/usr/bin/
-        sudo cp eg/*.sh /mnt/rootfs/home/
-        sudo cp -r eg/hkdm /mnt/rootfs/etc
+        
 
         sudo chroot /mnt/rootfs /bin/bash -c "
           # 更新包列表
@@ -115,47 +113,7 @@ jobs:
           echo 'HandlePowerKey=ignore' >> /etc/systemd/logind.conf
           echo 'HandlePowerKeyLongPress=poweroff' >> /etc/systemd/logind.conf
 
-          cat <<EOF > /usr/bin/power.sh
-        #!/bin/bash
-        # 亮度调节路径
-        BRIGHTNESS_PATH="/sys/class/backlight/*/brightness"
-        # 亮度设置
-        DIM_BRIGHTNESS_LEVEL=0
-        MAX_BRIGHTNESS_LEVEL=100
-        # 获取当前亮度
-        CURRENT_BRIGHTNESS=$(cat $BRIGHTNESS_PATH)
-        # 函数：设置屏幕亮度
-        set_brightness() {
-          echo $1 | sudo tee $BRIGHTNESS_PATH > /dev/null
-        }
-        # 检查是否提供了 power 参数
-        if [ "$1" == "power" ]; then
-          if [ "$CURRENT_BRIGHTNESS" -eq "$DIM_BRIGHTNESS_LEVEL" ]; then
-            set_brightness $MAX_BRIGHTNESS_LEVEL
-            echo "屏幕亮度已设置为最大值"
-          else
-            set_brightness $DIM_BRIGHTNESS_LEVEL
-            echo "屏幕亮度已调暗"
-          fi
-        fi
-        CURRENT_BRIGHTNESS=$(cat $BRIGHTNESS_PATH)
-        # 管理 buffyboard
-        if [ -z "$1" ] || [ "$1" == "power" ]; then
-          if [ "$CURRENT_BRIGHTNESS" -eq "$DIM_BRIGHTNESS_LEVEL" ]; then
-            if pidof buffyboard > /dev/null; then
-        	    sudo kill $(pidof buffyboard)
-        	  fi
-          fi
-        fi
-        # 检查是否提供了 kb 参数
-        if [ "$1" == "kb" ]; then
-          if pidof buffyboard > /dev/null; then
-            sudo kill $(pgrep -x buffyboard)
-          else
-            sudo buffyboard &
-          fi
-        fi
-        EOF
+          
           cat <<EOF > /home/auto_ttyGS0.sh 
         #!/bin/bash
         while true;do
@@ -199,12 +157,11 @@ jobs:
         [Install]
         WantedBy=multi-user.target
         EOF
-          chmod 755 /usr/bin/hkdm
-          chmod 755 /usr/bin/buffyboard
-          chmod 755 /usr/bin/power.sh
+
           chmod 755 /home/auto_ttyGS0.sh
-          chmod 755 /etc/hkdm/config.d/
-          chmod 755 /etc/hkdm/config.d/power.toml
+          wget https://github.com/gmicroul/ttyescape-for-arch-and-mobian-and-nixos/raw/refs/heads/main/mobian/ttyescape.deb
+          dpkg -i ttyescape.deb
+          rm -f ttyescape.deb
           systemctl enable autottyGS0.service
           systemctl enable hkdm.service
         "
