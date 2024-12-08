@@ -14,7 +14,7 @@ on:
       device_code:
         description: "Device codename"
         required: true
-        default: "capricorn"
+        default: "mido"
       apply_cjktty_patch:
         description: "Apply CJKTTY patch"
         required: true
