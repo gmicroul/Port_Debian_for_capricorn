@@ -74,7 +74,7 @@ jobs:
           sudo chown $USER:$GROUPS /mnt/chroot
           cp *.sh /rootfs/
           cp boot.img /rootfs/
-          cp -rf ./firmware /rootfs/
+          cp -rf ./firmware-mido /rootfs/
       - name: Download source code
         id: down
         run: |
