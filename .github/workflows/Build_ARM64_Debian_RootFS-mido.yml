@@ -60,27 +60,27 @@ jobs:
           echo '# 安装软件包'
           apt-get install -y vim sudo curl openssh-server ssh net-tools ethtool ifupdown iputils-ping  htop vim kmod network-manager make nano fdisk libevdev-dev git usbutils initramfs-tools ntpdate
 
-          echo '# 添加用户 kschen 并设置密码'
-          useradd -m -s /bin/bash kschen
-          echo 'kschen:1' | chpasswd
+          echo '# 添加用户 mido 并设置密码'
+          useradd -m -s /bin/bash mido
+          echo 'mido:1' | chpasswd
 
-          echo '# 将 kschen 添加到 sudo 组'
-          usermod -aG sudo kschen
+          echo '# 将 mido 添加到 sudo 组'
+          usermod -aG sudo mido
 
           echo '# 配置 SSH 服务'
-          mkdir -p /home/kschen/.ssh
-          chmod 700 /home/kschen/.ssh
-          touch /home/kschen/.ssh/authorized_keys
-          chmod 600 /home/kschen/.ssh/authorized_keys
-          chown -R kschen:kschen /home/kschen/.ssh
+          mkdir -p /home/mido/.ssh
+          chmod 700 /home/mido/.ssh
+          touch /home/mido/.ssh/authorized_keys
+          chmod 600 /home/mido/.ssh/authorized_keys
+          chown -R mido:mido /home/mido/.ssh
           sed -i 's/^PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
 
           echo '# 设置 SSH 服务开机启动'
           systemctl enable ssh
 
           echo '# 设置主机名'
-          echo 'kschen' > /etc/hostname
-          echo '127.0.1.1 kschen' >> /etc/hosts
+          echo 'mido' > /etc/hostname
+          echo '127.0.1.1 mido' >> /etc/hosts
           # 安装字体相关包
           apt-get update
           apt-get install -y console-setup fonts-dejavu kbd
@@ -125,7 +125,7 @@ jobs:
           break
         done
         # agetty -L -i ttyGS0 115200 vt100
-        login -f kschen < /dev/ttyGS0
+        login -f mido < /dev/ttyGS0
         EOF
           
           cat <<EOF > /etc/systemd/system/autottyGS0.service
